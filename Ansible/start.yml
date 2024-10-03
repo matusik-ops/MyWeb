@@ -1,0 +1,5 @@
+- name: matkova webka
+  hosts: all
+  become: yes
+  roles:
+    - init_docker

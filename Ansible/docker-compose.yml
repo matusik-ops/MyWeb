@@ -1,0 +1,8 @@
+services:
+  web:
+    image: matkodevops/webka:V4
+    container_name: webka
+    ports:
+      - "5000:5000"
+  redis:
+    image: "redis:alpine"
