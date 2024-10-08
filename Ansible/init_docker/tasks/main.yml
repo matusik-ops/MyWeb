@@ -1,0 +1,128 @@
+- name: Update and upgrade all packages to the latest version
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install required packages
+  ansible.builtin.apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - software-properties-common
+      - apache2-utils
+      - python3-passlib
+      - sqlite3
+
+- name: Create directory for Docker's GPG key
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Add Docker's official GPG key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    keyring: /etc/apt/keyrings/docker.gpg
+    state: present
+
+- name: Print architecture variables
+  ansible.builtin.debug:
+    msg: "Architecture: {{ ansible_architecture }}, Codename: {{ ansible_lsb.codename }}"
+
+- name: Add Docker repository
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [arch={{ arch_mapping[ansible_architecture] | default(ansible_architecture) }}
+      signed-by=/etc/apt/keyrings/docker.gpg]
+      https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
+    filename: docker
+    state: present
+
+- name: Install Docker and related packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  loop:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
+
+- name: Add Docker group
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Add user to Docker group
+  ansible.builtin.user:
+    name: "{{ user_name }}"
+    groups: docker
+    append: true
+
+- name: Enable and start Docker services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop:
+    - docker.service
+    - containerd.service
+
+- name: Install docker-compose
+  ansible.builtin.get_url:
+    url: https://github.com/docker/compose/releases/download/v2.28.1/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: '755'
+
+- name: Copy compose file
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: ~/
+  loop:
+    - "{{ playbook_dir }}/../Docker/docker-compose.yml"
+
+- name: Run Docker Compose (will fail if Docker is not installed)
+  ansible.builtin.command: docker-compose up -d
+  args:
+    chdir: ~/
+
+- name: Install NGx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+  register: check
+
+- name: Start NGx service
+  ansible.legacy.service:
+    name: nginx
+    state: started
+    enabled: true
+
+- name: Check if NGx is already installed
+  ansible.legacy.debug:
+    msg: "Nginx is already installed"
+  when: check.changed == False
+
+- name: Copy NGx config file defaults
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /etc/nginx/sites-available  # link to /path/to/file
+    follow: true
+  loop:
+    - "{{ playbook_dir }}/../MyWeb/default"
+
+- name: Htpasswd
+  community.general.htpasswd:
+    path: /etc/nginx/.htpasswd
+    name: "{{ htpasswd_name }}"
+    password: "{{ htpasswd_password }}"
+  become: true
+
+- name: Restart Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted

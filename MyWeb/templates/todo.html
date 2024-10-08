@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ToDo List</title>
+</head>
+<body>
+    <h1>ToDo List</h1>
+    <form method="post" action="/add">
+        <input type="text" name="task" placeholder="Add a task" required>
+        <button type="submit">Add</button>
+    </form>
+    
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task[1] }}
+                <a href="/delete/{{ task[0] }}">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a class="btn btn-success" href="/">
+        <button type = "button" class="w3-button w3-padding-large w3-white w3-border"><b>GO BACK</b></button>
+     </a>
+
+</body>
+</html>
