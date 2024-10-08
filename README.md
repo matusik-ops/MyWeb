@@ -27,16 +27,12 @@ docker build -f Docker/Dockerfile -t testimg . # docker build -f <path/to/Docker
 
 # How to run it
 
-1. Install updates
-```bash
-sudo apt-get update
-```
-2. Git clone repo "MyWeb"
+1. Git clone repo "MyWeb"
 ```bash
 git clone https://github.com/matusik-ops/MyWeb
 ```
 
-3. Install Ansible
+2. Install Ansible
 ```bash
 sudo apt update
 sudo apt install software-properties-common
@@ -44,13 +40,13 @@ sudo add-apt-repository --yes --update ppa:ansible/ansible
 sudo apt install ansible
 ```
 
-4. Rewrite all vars and inventory in automation/Ansible
+3. Rewrite all vars and inventory in automation/Ansible
 ```bash
 cd MyWeb/Ansible
 vim inventory 
 vim ... # vars
 ```
-5. Run playbook in automation/Ansible folder "start.yml"
+4. Run playbook in automation/Ansible folder "start.yml"
 ```bash
 ansible-playbook -i inventory start.yml
 ```
