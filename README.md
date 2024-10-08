@@ -17,7 +17,7 @@ Version:
 # Build image:
 1. Clone the repo
 ```bash
-git clone ...
+git clone https://github.com/matusik-ops/MyWeb
 ```
 2. Build it
 ```bash
