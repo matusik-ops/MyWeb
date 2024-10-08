@@ -4,15 +4,15 @@ for project: Project_myweb/MyWeb
 ### Requirements:
 
 Version:
-### Python3: 3.10.12
-### Nginx: nginx/1.18.0 (Ubuntu)
-### Flask: 3.0.3
-### Werkzeug 3.0.4
-### Ubuntu: 22.04
-### Docker: 27.3.1, build ce12230
-### Docker-compose: 2.28.1
-### Ansible: core 2.16.11
-### jinja: 3.1.4
+- Python3: 3.10.12
+- Nginx: nginx/1.18.0 (Ubuntu)
+- Flask: 3.0.3
+- Werkzeug 3.0.4
+- Ubuntu: 22.04
+- Docker: 27.3.1, build ce12230
+- Docker-compose: 2.28.1
+- Ansible: core 2.16.11
+- jinja: 3.1.4
 
 # Build image:
 1. Clone the repo
