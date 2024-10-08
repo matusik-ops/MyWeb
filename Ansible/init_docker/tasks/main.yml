@@ -80,14 +80,15 @@
 
 - name: Copy compose file
   ansible.builtin.copy:
-    src: /home/{{ user_name }}/MyWeb/Docker/docker-compose.yml
+    src: "{{ item }}"
     dest: ~/
+  loop:
+    - "{{ playbook_dir }}/../Docker/docker-compose.yml"
 
 - name: Run Docker Compose (will fail if Docker is not installed)
   ansible.builtin.command: docker-compose up -d
   args:
     chdir: ~/
-  ignore_errors: true
 
 - name: Install NGx
   ansible.builtin.apt:
@@ -108,9 +109,11 @@
 
 - name: Copy NGx config file defaults
   ansible.builtin.copy:
-    src: /home/{{ user_name }}/MyWeb/MyWeb/default
+    src: "{{ item }}"
     dest: /etc/nginx/sites-available  # link to /path/to/file
     follow: true
+  loop:
+    - "{{ playbook_dir }}/../MyWeb/default"
 
 - name: Htpasswd
   community.general.htpasswd:
