@@ -31,7 +31,7 @@ docker build -f Docker/Dockerfile -t testimg . # docker build -f <path/to/Docker
 ```bash
 sudo apt-get update
 ```
-3. Git clone repo "MyWeb"
+2. Git clone repo "MyWeb"
 ```bash
 git clone https://github.com/matusik-ops/MyWeb
 ```
