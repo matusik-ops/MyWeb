@@ -11,7 +11,7 @@ def create_database():
     conn.close()
 
 
-@app.route("/lol")
+@app.route("/hello")
 def hello_world():
     return "<p>Hello, World!</p>"
 
