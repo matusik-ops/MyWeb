@@ -31,7 +31,7 @@ docker build -f Docker/Dockerfile -t testimg . # docker build -f <path/to/Docker
 2. Git clone repo "MyWeb"
 ```bash
 cd
-git clone ...
+git clone https://github.com/matusik-ops/MyWeb
 ```
 
 3. Install Ansible
