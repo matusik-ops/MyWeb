@@ -33,7 +33,6 @@ sudo apt-get update
 ```
 3. Git clone repo "MyWeb"
 ```bash
-cd
 git clone https://github.com/matusik-ops/MyWeb
 ```
 
