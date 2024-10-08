@@ -28,7 +28,7 @@ docker build -f Docker/Dockerfile -t testimg . # docker build -f <path/to/Docker
 # How to run it
 
 1. Install update
-2. Git clone repo "MyWeb" to /home directory
+2. Git clone repo "MyWeb"
 ```bash
 cd
 git clone ...
