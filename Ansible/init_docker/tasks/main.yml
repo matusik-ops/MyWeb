@@ -14,6 +14,8 @@
       - apache2-utils
       - python3-passlib
       - sqlite3
+      - certbot
+      - python3-certbot-nginx
 
 - name: Create directory for Docker's GPG key
   ansible.builtin.file:
@@ -85,7 +87,7 @@
   loop:
     - "{{ playbook_dir }}/../Docker/docker-compose.yml"
 
-- name: Run Docker Compose (will fail if Docker is not installed)
+- name: Run Docker Compose
   ansible.builtin.command: docker-compose up -d
   args:
     chdir: ~/
@@ -107,13 +109,27 @@
     msg: "Nginx is already installed"
   when: check.changed == False
 
-- name: Copy NGx config file defaults
-  ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: /etc/nginx/sites-available  # link to /path/to/file
-    follow: true
-  loop:
-    - "{{ playbook_dir }}/../MyWeb/default"
+- name: Create Nginx SSL configuration
+  ansible.builtin.template:
+    src: nginx_ssl.conf.j2
+    dest: "{{ nginx_config_file }}"
+
+- name: Enable the Nginx site configuration
+  ansible.builtin.command: ln -s "{{ nginx_config_file }}" "{{ nginx_enabled_config }}"
+  args:
+    creates: "{{ nginx_enabled_config }}"
+
+- name: Restart Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+
+
+- name: Obtain SSL certificate for domain with Certbot
+  ansible.builtin.command: >
+    certbot --nginx -d {{ domain_name }} --email {{ email }} --agree-tos --non-interactive
+  args:
+    creates: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"
 
 - name: Htpasswd
   community.general.htpasswd:
