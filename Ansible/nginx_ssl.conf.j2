@@ -1,0 +1,18 @@
+server {
+  listen 80;
+  listen [::]:80;
+  server_name {{ domain_name }};  # Replace with your domain or IP address
+
+  location / {
+    proxy_pass http://localhost:5000;  # Forward requests to the Flask application
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+  location /todo {
+    auth_basic "Restricted Content";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+    proxy_pass http://localhost:5000/todo;  # Forward requests to the Flask application
+  }
+}
