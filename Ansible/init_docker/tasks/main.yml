@@ -118,18 +118,14 @@
   ansible.builtin.command: ln -s "{{ nginx_config_file }}" "{{ nginx_enabled_config }}"
   args:
     creates: "{{ nginx_enabled_config }}"
-
-- name: Restart Nginx
-  ansible.builtin.service:
-    name: nginx
-    state: restarted
-
+  notify: Restart Nginx
 
 - name: Obtain SSL certificate for domain with Certbot
   ansible.builtin.command: >
-    certbot --nginx -d {{ domain_name }} --email {{ email }} --agree-tos --non-interactive
+    certbot --nginx -d {{ item }} --email {{ email }} --agree-tos --non-interactive
+  loop: "{{ domain_name}}"
   args:
-    creates: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"
+    creates: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
 
 - name: Htpasswd
   community.general.htpasswd:
@@ -137,8 +133,4 @@
     name: "{{ htpasswd_name }}"
     password: "{{ htpasswd_password }}"
   become: true
-
-- name: Restart Nginx
-  ansible.builtin.service:
-    name: nginx
-    state: restarted
+  notify: Restart Nginx
