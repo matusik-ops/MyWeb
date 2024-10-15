@@ -4,3 +4,12 @@ arch_mapping:  # Map ansible architecture {{ ansible_architecture }} names to Do
 htpasswd_name: matusik
 htpasswd_password: matusik
 user_name: vagrant
+certbot_source_directory: /usr/local/certbot-src
+certbot_executable_path: "{{ certbot_source_directory }}/venv/bin/certbot"
+nginx_config_file: "/etc/nginx/sites-available/{{ domain }}"
+nginx_enabled_config: "/etc/nginx/sites-enabled/{{ domain }}"
+domain_names: 
+  - "webma.sk"
+  - "www.webma.sk"  # Replace with your domain
+domain: webma.sk
+email: "matkodevops@gmail.com"  # Replace with your email for Certbot notifications
