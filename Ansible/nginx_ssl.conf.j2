@@ -2,7 +2,7 @@ server {
   listen 80;
   listen [::]:80;
   
-  server_name {{ domain_name | join(' ') }};  
+  server_name {{ domain_names | join(' ') }};  
 
   location / {
     proxy_pass http://localhost:5000;  # Forward requests to the Flask application
