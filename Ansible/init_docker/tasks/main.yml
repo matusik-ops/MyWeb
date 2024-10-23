@@ -80,17 +80,21 @@
     dest: /usr/local/bin/docker-compose
     mode: '755'
 
-- name: Copy compose file
+- name: Copy files
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: ~/
+    dest: /home/vagrant/
   loop:
-    - "{{ playbook_dir }}/../Docker/docker-compose.yml"
+    - "{{ playbook_dir }}/../Monitoring"
+    - "{{ playbook_dir }}/../Docker"
+    - "{{ playbook_dir }}/../MyWeb"
+    #- "{{ playbook_dir }}/../Docker/docker-compose.yml"
+    #- "{{ playbook_dir }}/../Monitoring/prometheus/prometheus.yml"
 
 - name: Run Docker Compose
   ansible.builtin.command: docker-compose up -d
   args:
-    chdir: ~/
+    chdir: /home/vagrant/Docker
 
 - name: Install NGx
   ansible.builtin.apt:
@@ -120,11 +124,11 @@
     creates: "{{ nginx_enabled_config }}"
   notify: Restart Nginx
 
-- name: Obtain SSL certificate for domain with Certbot
-  ansible.builtin.command: >
-    certbot --staging --nginx -d {{ domain_names | join(',') }} --email {{ email }} --agree-tos --non-interactive  
-  args:
-    creates: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
+#- name: Obtain SSL certificate for domain with Certbot
+#  ansible.builtin.command: >
+#    certbot --staging --nginx -d {{ domain_names | join(',') }} --email {{ email }} --agree-tos --non-interactive  
+#  args:
+#    creates: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
 
 - name: Htpasswd
   community.general.htpasswd:

@@ -1,2 +1,4 @@
-flask
-redis
+flask==2.2.2
+#redis
+prometheus_client==0.15.0
+Werkzeug==2.2.2

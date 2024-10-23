@@ -1,8 +1,43 @@
 services:
-  web:
-    image: matkodevops/webka:V4
-    container_name: webka
+  flask_app:
+    build:
+      context: ../
+      dockerfile: Docker/Dockerfile
     ports:
       - "5000:5000"
-  redis:
-    image: "redis:alpine"
+  #  networks:
+  #    - flask_network
+
+  #redis:
+  #  image: "redis:alpine"
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - /home/vagrant/Monitoring/prometheus/:/etc/prometheus/
+    ports:
+      - "9090:9090"
+ #   networks:
+ #     - flask_network
+  
+  grafana:
+    image: grafana/grafana-oss
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin  #set password here
+    depends_on:
+      - prometheus
+
+  #web:
+  #  image: matkodevops/webka:V6
+  #  container_name: webka
+  #  ports:
+  #    - "5000:5000"
+
+   # networks:
+   #  - flask_network
+
+#networks:
+#  flask_network:
+#    driver: bridge
