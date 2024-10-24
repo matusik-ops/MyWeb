@@ -1,9 +1,18 @@
 # MyWeb
-for project: Project_myweb/MyWeb
+This project involves setting up a web application where Nginx serves as 
+a reverse proxy, directing incoming HTTPS requests to a Flask-based 
+backend API running in a Docker container. The backend is powered by 
+Python/Flask application, which serves dynamic content. A simple web page 
+interface is also part of the project, enabling interaction with users. 
+For data storage, the application uses SQLite, a lightweight and 
+serverless relational database, for storing and retrieving data.
+
+![schema](schema.png)
+
 
 ### Requirements:
 
-Version:
+## Versions:
 - Python3: 3.10.12
 - Nginx: nginx/1.18.0 (Ubuntu)
 - Flask: 3.0.3
