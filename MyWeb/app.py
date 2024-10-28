@@ -64,7 +64,7 @@ def delete_task(task_id):
 
 @app.route('/download')
 def download():
-    path = 'file.txt'
+    path = 'CV_Kvasnovsky.pdf'
     return send_file(path, as_attachment=True)
 
 # Expose Prometheus metrics

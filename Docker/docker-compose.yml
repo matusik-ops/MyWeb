@@ -16,7 +16,7 @@ services:
       - prometheus
 
   flask_app:
-    image: matkodevops/webka:V6
+    image: matkodevops/webka:V8
     container_name: webka
     ports:
       - "5000:5000"
