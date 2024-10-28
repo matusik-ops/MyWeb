@@ -1,7 +1,14 @@
-from flask import Flask, send_from_directory, send_file, render_template, request, redirect, url_for
+from flask import Flask, send_from_directory, send_file, render_template, request, redirect, url_for, session
 import sqlite3
+from prometheus_client import Counter, generate_latest
+
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'
+page_refresh_counter = Counter(
+    'page_refresh_total', 'Total number of page refreshes across all users'
+)
+
 
 def create_database():
     conn = sqlite3.connect('todo.db')
@@ -17,7 +24,15 @@ def hello_world():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    page_refresh_counter.inc()
+
+    if 'refresh_count' not in session:
+        session['refresh_count'] = 0
+    
+    # Increase the page refresh count for the current user
+    session['refresh_count'] += 1
+
+    return render_template('index.html', refresh_count=session['refresh_count'])
 
 @app.route('/todo')
 def todo():
@@ -49,8 +64,14 @@ def delete_task(task_id):
 
 @app.route('/download')
 def download():
-    path = 'file.txt'
+    path = 'CV_Kvasnovsky.pdf'
     return send_file(path, as_attachment=True)
+
+# Expose Prometheus metrics
+@app.route('/metrics')
+def metrics():
+    # Expose the metrics in the Prometheus format
+    return generate_latest(page_refresh_counter)
 
 
 if __name__ == "__main__":

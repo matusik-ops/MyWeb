@@ -1,4 +1,4 @@
-- name: Update and upgrade all packages to the latest version
+- name: Update all packages to the latest version
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
@@ -80,17 +80,20 @@
     dest: /usr/local/bin/docker-compose
     mode: '755'
 
-- name: Copy compose file
+- name: Copy files
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: ~/
+    mode: '0644'
   loop:
-    - "{{ playbook_dir }}/../Docker/docker-compose.yml"
+    - "{{ playbook_dir }}/../Monitoring"
+    - "{{ playbook_dir }}/../Docker"
+    - "{{ playbook_dir }}/../MyWeb"
 
 - name: Run Docker Compose
   ansible.builtin.command: docker-compose up -d
   args:
-    chdir: ~/
+    chdir: ~/Docker
 
 - name: Install NGx
   ansible.builtin.apt:

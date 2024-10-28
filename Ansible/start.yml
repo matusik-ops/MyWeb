@@ -1,5 +1,5 @@
 - name: matkova webka
   hosts: all
-  become: yes
+  become: true
   roles:
     - init_docker

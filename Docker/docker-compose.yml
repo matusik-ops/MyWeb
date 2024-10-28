@@ -1,8 +1,22 @@
 services:
-  web:
-    image: matkodevops/webka:V4
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ../Monitoring/prometheus/:/etc/prometheus/
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana-oss
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+    depends_on:
+      - prometheus
+
+  flask_app:
+    image: matkodevops/webka:V8
     container_name: webka
     ports:
       - "5000:5000"
-  redis:
-    image: "redis:alpine"
